@@ -1,0 +1,98 @@
+﻿Imports System.Windows.Forms.Design
+
+Public Class Form1
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        ' Center the Program to the Center of the Screen
+        CenterToScreen()
+
+    End Sub
+
+    Private Sub btnCalculate_Click(sender As Object, e As EventArgs) Handles btnCalculate.Click
+
+        ' Initialize Variables
+        Dim iPrice As Integer
+        Dim iDown As Integer
+        Dim decInterest As Decimal
+        Dim iYears As Integer
+        Dim iTotalMonths As Integer
+        Dim decMonthlyInterest As Decimal
+        Dim iPrinciple As Integer
+        Dim decMonthlyPayment As Decimal
+
+        ' Check to ensure txtPrice is Numeric and Positive then store in variable iPrice
+        If IsNumeric(txtPrice.Text) And 0 < txtPrice.Text Then
+            iPrice = txtPrice.Text
+        Else
+            ' If not Numeric or Positive display error and stop program
+            MsgBox("Please enter a valid number for the home's price", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+
+        ' Check to ensure txtDownPayment is Numeric and Positive then store in variable iDown
+        If IsNumeric(txtDownPayment.Text) And 0 < txtDownPayment.Text Then
+            iDown = txtDownPayment.Text
+        Else
+            ' If not Numeric or Positive display error and stop program
+            MsgBox("Please enter a valid number for the down payment", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+
+        ' Check to ensure txtInterest is Numeric and Positive then store in variable decInterest
+        If IsNumeric(txtInterest.Text) And 0 < txtInterest.Text Then
+            decInterest = txtInterest.Text
+        Else
+            ' If not Numeric or Positive display error and stop program
+            MsgBox("Please enter a valid number for the interest rate", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+
+        ' Check to ensure txtYears is Numeric and Positive then store in variable iYears
+        If IsNumeric(txtYears.Text) And 0 < txtYears.Text Then
+            iYears = txtYears.Text
+        Else
+            ' If not Numeric or Positive display error and stop program
+            MsgBox("Please enter a valud number of years", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+
+        ' Calculate Total Principle by subtracting Down Payment from Total Price
+        iPrinciple = iPrice - iDown
+
+        ' Calculate Monthly Interest by dividing Interest Rate by 100, then dividing by 12
+        decMonthlyInterest = (decInterest / 100) / 12
+
+        ' Calculate Total Months by multiplying number of Years by 12
+        iTotalMonths = iYears * 12
+
+        ' Calculate Mortgage Payment by using Formula {M = P(i(1 + i) ^ n) / ((1 + i) ^ n - 1)}
+        decMonthlyPayment = (iPrinciple * (decMonthlyInterest * (1 + decMonthlyInterest) ^ iTotalMonths)) /
+            ((1 + decMonthlyInterest) ^ iTotalMonths - 1)
+
+        ' Create Tax Calculation with US Average Millage and store as decTaxes
+        Dim decTaxes As Decimal
+        decTaxes = 0.83 / 100
+
+        ' Calculate Monthly Taxes by Multiplying Total Price by Tax Calculation, then dividing by 12
+        Dim decMonthlyTaxes As Decimal
+        decMonthlyTaxes = (iPrice * decTaxes) / 12
+
+        ' Calculate Monthly Insurance by dividing Total Price by 1000, then multiplying by $3.50, then dividing by 12
+        Dim decMonthlyInsurance As Decimal
+        decMonthlyInsurance = ((iPrice / 1000) * 3.5) / 12
+
+        ' Calculate Total Monthly Cost by adding Monthly Payment, Monthly Taxes, and Monthly Insurance
+        Dim decTotalMonthly As Decimal
+        decTotalMonthly = decMonthlyPayment + decMonthlyTaxes + decMonthlyInsurance
+
+        ' Display message that shows Mortgage, Taxes, Insurance, and Total Combined Payment
+        MsgBox("The estimated monthly mortgage is: $" & Decimal.Round(decMonthlyPayment) & vbCrLf &
+               "The estimated monthly taxes are: $" & Decimal.Round(decMonthlyTaxes) & vbCrLf &
+               "The estimated monthly insurnace costs: $" & Decimal.Round(decMonthlyInsurance) & vbCrLf &
+               "Your estimated total monthly payment is: $" & Decimal.Round(decTotalMonthly),
+               MsgBoxStyle.OkOnly, "Estimated Mortgage Breakdown")
+
+    End Sub
+
+End Class
